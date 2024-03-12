@@ -179,5 +179,6 @@
       "space-before-function-paren": 0,
       "reactotron/no-tron-in-production": "error"
     }
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }
