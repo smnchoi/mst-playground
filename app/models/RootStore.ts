@@ -1,9 +1,11 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { NotiStoreModel } from "./NotiStore"
 
 /**
  * A RootStore model.
  */
 export const RootStoreModel = types.model("RootStore").props({
+  notiStore: types.optional(NotiStoreModel, {} as any),
 })
 
 /**
