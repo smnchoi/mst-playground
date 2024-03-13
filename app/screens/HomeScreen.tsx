@@ -1,6 +1,6 @@
 import { Observer, observer } from "mobx-react-lite"
 import React, { FC, useCallback, useEffect, useState } from "react"
-import { FlatList, View, ViewStyle } from "react-native"
+import { FlatList, View, ViewStyle, TouchableOpacity } from "react-native"
 import { Button, Card, Text } from "app/components"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
@@ -40,14 +40,15 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
     },
     [checkedIds],
   )
-
   return (
     <View style={[$container, useSafeAreaInsetsStyle(["top", "bottom"])]}>
       <Button
-        text={isHappy ? "❤️" : "💙"}
+        text={notiStore.deletedOnly ? "삭제된 알림" : "전체 알림"}
         onPress={() => {
           console.log("isHappy", isHappy)
           setIsHappy(!isHappy)
+
+          notiStore.setProp("deletedOnly", !notiStore.deletedOnly)
         }}
       />
 
@@ -55,20 +56,77 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
       <View style={$topContainer}>
         <Text size="lg" text="MobX State Tree" />
         <FlatList
+          key="MST"
           data={notiStore.notiArryForList}
-          renderItem={({ item }) => (
+          renderItem={({ item: noti }) => (
             <Observer>
               {() => (
-                <Card
-                  heading={`${item.createdAt.toLocaleDateString()}: ${item.title}`}
-                  content={item.content}
-                  footer={notiStore.isChecked(item) ? "🔘" : "🔵"}
-                  footerStyle={$checkMark}
-                  onPress={() => notiStore.toggleCheck(item)}
-                />
+                <View style={{ opacity: !notiStore.isDeleted(noti) ? 1 : 0.6 }}>
+                  <Card
+                    heading={noti.title}
+                    content={noti.content}
+                    // footer={notiStore.isChecked(item) ? "🔘" : "🔵"}
+                    // footerStyle={$checkMark}
+                    // onPress={() => notiStore.toggleCheck(item)}
+                    LeftComponent={
+                      <View
+                        style={{
+                          width: 12,
+                          borderRightWidth: 1,
+                          borderRightColor: colors.palette.neutral300,
+                        }}
+                      >
+                        <Text
+                          text={noti.labelFromPriority}
+                          size="xxs"
+                          style={{
+                            top: 2,
+                            left: -4,
+                            color: colors.palette.neutral300,
+                          }}
+                        />
+                      </View>
+                    }
+                    RightComponent={
+                      <View
+                        style={{
+                          width: 20,
+                          height: "100%",
+                          alignItems: "center",
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() =>
+                            !notiStore.isDeleted(noti)
+                              ? notiStore.delete(noti)
+                              : notiStore.restore(noti)
+                          }
+                          hitSlop={4}
+                        >
+                          <Text text={!notiStore.isDeleted(noti) ? "✖️" : "🔙"} size="xxs" />
+                        </TouchableOpacity>
+
+                        <Text
+                          text={noti.timestamp}
+                          size="xxs"
+                          style={{
+                            width: 78,
+                            position: "absolute",
+                            bottom: -8,
+                            right: 0,
+                            textAlign: "right",
+                            color: colors.palette.neutral300,
+                          }}
+                          numberOfLines={1}
+                        />
+                      </View>
+                    }
+                  />
+                </View>
               )}
             </Observer>
           )}
+          contentContainerStyle={{ backgroundColor: colors.background }}
         />
       </View>
 
@@ -76,6 +134,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
       <View style={$bottomContainer}>
         <Text size="lg" text="React State" />
         <FlatList
+          key="React_State"
           data={notiArrayState}
           renderItem={({ item }) => (
             <Card
