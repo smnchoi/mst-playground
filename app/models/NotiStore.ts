@@ -17,28 +17,8 @@ export const NotiStoreModel = types
       return self.checkedOnly ? self.checked : self.notiArray
     },
 
-    isAlreadyChecked(noti: Noti) {
+    isChecked(noti: Noti) {
       return self.checked.includes(noti)
-    },
-  }))
-  .actions((self) => ({
-    setNotiArray() {
-      // WIP 1.
-      // const result: NotiStoreSnapshotIn[] = sampleData.map((noti) => ({
-      //   ...noti,
-      //   createdAt: new Date(noti.createdAt),
-      // }))
-      // console.log("result", result)
-      // self.setProp("notiArray", result)
-      //
-      // WIP 2.
-      // const result: NotiStoreSnapshotIn[] = sampleData.map((noti) => ({
-      //   ...noti,
-      //   createdAt: new Date(noti.createdAt),
-      // }))
-      // console.log("result", result)
-      // const notiInstances = result.map((noti) => NotiModel.create(noti))
-      // self.setProp("notiArray", notiInstances)
     },
   }))
   .actions((self) => ({
@@ -51,7 +31,7 @@ export const NotiStoreModel = types
   }))
   .actions((self) => ({
     toggleCheck(noti: Noti) {
-      self.isAlreadyChecked(noti) ? self.uncheck(noti) : self.check(noti)
+      self.isChecked(noti) ? self.uncheck(noti) : self.check(noti)
     },
   }))
 
