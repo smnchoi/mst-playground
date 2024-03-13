@@ -7,11 +7,11 @@ import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import type { NotiModelType } from "app/models"
 import { useStores } from "app/models"
-import sampleData from "../screens/sample-data.json"
+import sampleData from "./sample-data.json"
 
-interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
+interface HomeScreenProps extends AppStackScreenProps<"Home"> {}
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen() {
+export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
   const { notiStore } = useStores()
 
   const [notiArrayState, setNotiArrayState] = useState<NotiModelType[]>([])
